@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<style>
+		div{
+			position: absolute;
+			left: 0; top:0;
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			border-radius: 50%;
+		}
+	</style>
+	<body>
+		<div id="div1"></div>
+	</body>
+</html>
+<script>
+var iSpeedX=0;
+var iSpeedY=0;
+var timer=null;
+window.onload=function(){
+	var oDiv=document.getElementById('div1');
+	var lastX=0;
+	var lastY=0;
+	oDiv.onmousedown=function(ev){
+		var oEvent=ev || event;
+		clearInterval(timer);
+		var disX=oEvent.clientX-oDiv.offsetLeft;
+		var disY=oEvent.clientY-oDiv.offsetTop;
+		document.onmousemove=function(ev){
+			var oEvent=ev || event;
+			oDiv.style.left=oEvent.clientX-disX+'px';
+			oDiv.style.top=oEvent.clientY-disY+'px';
+			//计算速度
+			iSpeedX=oEvent.clientX-lastX;
+			iSpeedY=oEvent.clientY-lastY;
+			//更新last
+			lastX=oEvent.clientX;
+			lastY=oEvent.clientY;
+		};
+		document.onmouseup=function(){
+			document.onmousemove=null;
+			document.onmouseup=null;
+			
+			collision(oDiv);
+		};
+		
+		return false;
+	};
+};
+function collision(obj){
+//	var iSpeedX=3;//横向速度
+//	var iSpeedY=6;//纵向速度
+//	var timer=null;
+	clearInterval(timer);
+	timer=setInterval(function(){
+		iSpeedY+=9;
+		//iSpeedX+=1;
+		var l=obj.offsetLeft+iSpeedX;
+		var t=obj.offsetTop+iSpeedY;
+		if(t>document.documentElement.clientHeight-obj.offsetHeight){
+			t=document.documentElement.clientHeight-obj.offsetHeight;
+			iSpeedY*=-0.9;
+			iSpeedX*=0.8;
+		}
+		if(t<=0){
+			t=0;
+			iSpeedY*=-0.9;
+			iSpeedX*=0.8;
+		}
+		if(l>document.documentElement.clientWidth-obj.offsetWidth){
+			l=document.documentElement.clientWidth-obj.offsetWidth;
+			iSpeedX*=-0.9;
+			iSpeedY*=0.8;
+		}
+		if(l<=0)
+		{
+			l=0;	
+			iSpeedX*=-1;
+			iSpeedY*=0.8;
+		}
+		obj.style.left=l+'px';
+		obj.style.top=t+'px';
+		if(Math.abs(iSpeedX)<1)iSpeedX=0;
+		if(Math.abs(iSpeedY)<1)iSpeedY=0;
+		if(iSpeedX==0 && iSpeedY==0){
+			clearInterval(timer);
+		}
+		document.title=iSpeedX+':'+iSpeedY;
+	},30);
+};
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
